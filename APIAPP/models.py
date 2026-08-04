@@ -2,9 +2,9 @@ from django.db import models
 
 # Create your models here.
 
+
 # construction model
 class construction(models.Model):
-    # image = models.ForeignKey(Image, related_name='profile', on_delete=models.CASCADE)
     type = models.CharField()
     completed = models.BooleanField()
     title = models.CharField(primary_key=True)
@@ -14,22 +14,28 @@ class construction(models.Model):
     company = models.CharField()
     size = models.IntegerField()
     # features = models.ForeignKey(feature,related_name='item', on_delete=models.CASCADE)
+    # image = models.ForeignKey(Image,related_name='item', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'a {self.title} | {self.year}'
-    
+        return f'a {self.title} | {self.year} '
+
+
 # feature model and foreign key in construction model
 class feature(models.Model):
-    construction = models.ForeignKey(construction, related_name='project', on_delete=models.CASCADE)
+    construction = models.ForeignKey(construction, related_name='features', on_delete=models.CASCADE)
     keyfeature1 = models.CharField(blank=True)
     def __str__(self):
-        return self.keyfeature1
+        return f'{self.keyfeature1} - {self.construction.title}'
 
 # image model and foreign key in construction
 class Image(models.Model):
-    construction = models.ForeignKey(construction, related_name='profile', on_delete=models.CASCADE)
-    image1 = models.ImageField(upload_to='images')
+    construction = models.ForeignKey(construction, on_delete=models.CASCADE,related_name='image')
+    image = models.ImageField(upload_to='images')
 
+    def __str__(self):
+        return  self.construction.title
+
+# a many to one model
 
 # contact model
 class contact(models.Model):
@@ -42,6 +48,8 @@ class contact(models.Model):
     budget = models.IntegerField(blank=True)
     duration = models.CharField(blank=True)
     discription = models.TextField(blank=True)
-
+    
     def __str__(self):
         return self.fullname
+
+        # the related name must be the same in your serialisers
